@@ -25,3 +25,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+/python/src/config.yml
+/python/src/correctsymlinks.py
+/python/src/numerique-import.py
+/python/src/photosharingserver/__init__.py
+/python/src/photosharing_input.sh
+/python/src/start_detectors.sh

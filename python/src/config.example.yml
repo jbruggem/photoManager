@@ -1,0 +1,21 @@
+config:
+  root_photos_folder: /home/bob/Photos/_import
+  use_original_folder_names: false
+  make_fusioned_folder_names: true
+paths:
+  film: film
+  jpeg: jpeg
+  raw: raw
+  years: years
+  categories: categories
+  import: .
+  dump: 00_dump
+  to_rename: 01_to_rename
+  to_move: 02_to_move
+  to_develop: 00_to_develop
+  to_publish: 02_to_publish
+  to_triage: 01_to_triage
+  ignore: ignore
+  publish: publish
+  dont-publish: dont-publish
+  outputJpeg: outputJpeg
