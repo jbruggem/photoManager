@@ -19,7 +19,7 @@ class ToMoveFinalMover(Mover):
         mimetypes.init()
 
     def handle(self,path):
-        print "handle",path
+        print "ToMoveFinalMover.handle",path
         try:
             self.realHandle(path)
         except Exception:
