@@ -17,9 +17,9 @@ def symlink(target,linkname,renameIfExists=True):
     destFolder = os.path.dirname(linkname)
     dest  = linkname
 	# make sure dest exists
-    self.makeDirs(destFolder,False)
-    
-    for i in range(1,99):                                     
+    makeDirs(destFolder,False)
+
+    for i in range(1,99):
         try:
             print "#symlink"
             print "#target",os.path.relpath(target,destFolder)
@@ -30,7 +30,7 @@ def symlink(target,linkname,renameIfExists=True):
             os.chdir(cdir)
             print "#done"
             return dest
-        except OSError as exc: 
+        except OSError as exc:
             print '#exception'
             if exc.errno == errno.EEXIST:
                 if renameIfExists:
@@ -48,12 +48,12 @@ def makeDirs(path,renameIfExists=True):
     dest=path
     destFolder = os.path.dirname(path)
     destName = os.path.basename(path)
-    for i in range(1,99):                                     
+    for i in range(1,99):
         try:
             print "making",dest
             os.makedirs(dest)
             return dest
-        except OSError as exc: 
+        except OSError as exc:
             print "making dir exception",exc
             if exc.errno == errno.EEXIST:
                 print "path exists"
@@ -62,7 +62,7 @@ def makeDirs(path,renameIfExists=True):
                 else:
                     return dest
             else: raise
-            
+
     print "Tried making dir ",path," without success. Giving up since we might be in a loop."
     return
 
@@ -72,12 +72,12 @@ def moveFile(srcPath,destPath):
     fileName = os.path.splitext(os.path.basename(destPath))
     destFolder = os.path.dirname(destPath)
     dest  = destPath
-    
-    for i in range(1,99):                                     
+
+    for i in range(1,99):
         try:
             os.rename(srcPath,dest)
             return dest
-        except OSError as exc: 
+        except OSError as exc:
             if exc.errno == errno.EEXIST:
                 dest = os.path.join(destFolder,fileName[0]+'_'+str(i)+fileName[1])
             else: raise
@@ -96,9 +96,9 @@ def mkDateFolderName(dt):
 
 def mkRangeFolderName(dtStart,dtFinish,parent):
     print type(dtStart), type(dtFinish), dtStart, dtFinish
-    
+
     n = dtStart.strftime('%Y-%m-%d')
-    
+
     n2 = ''
     if dtFinish.year != dtStart.year:
         n2 +=  dtFinish.strftime('%Y')+'-'
@@ -106,25 +106,25 @@ def mkRangeFolderName(dtStart,dtFinish,parent):
         n2 +=   dtFinish.strftime('%m')+'-'
     if dtFinish.day != dtStart.day:
         n2 +=   dtFinish.strftime('%d')
-    
+
     if len(n2) >0:
         n += '--' + n2
-          
+
     return os.path.join(parent,n)
 
 def findDateFolders(path):
     res = {}
-    for f in os.listdir(path): 
+    for f in os.listdir(path):
         if '-' in f and not '--' in f:
             dt = parseDateFolderName(f)
-            #print "parsing",f 
+            #print "parsing",f
             if dt:
                 res[mkDateFolderName(dt)] = (dt,os.path.join(path,f))
-                
-    return res                
-                
-def parseDateFolderName(name): 
-    #print "parsing",f 
+
+    return res
+
+def parseDateFolderName(name):
+    #print "parsing",f
     try:
         y = int(name[0:4])
         try:
@@ -135,23 +135,23 @@ def parseDateFolderName(name):
             d = int(name[8:10])
         except ValueError as e:
             d = 1
-        
+
         #print "date value:",y,m,d
         dt = datetime.datetime(y,m,d)
         #print "date:",dt
-        return dt   
+        return dt
     except ValueError as e:
         print "error parsing",name," | ",e
     except TypeError as e:
         print "error parsing",name," | ",e
     return None
 
-    
+
 def findRangeFolders(path):
     res = []
-    for f in os.listdir(path): 
+    for f in os.listdir(path):
         if '--' in f:
-            #print "parsing",f 
+            #print "parsing",f
             try:
                 ys = int(f[0:4])
                 ms = int(f[5:7])
@@ -175,15 +175,15 @@ def findRangeFolders(path):
                     #print "None"
                     yf = None
                     mf = None
-                    df = None      
+                    df = None
                 #print "start:",ys,ms,ds
                 #print "end:",yf,mf,df
                 res.append((datetime.datetime(ys,ms,ds),datetime.datetime(yf,mf,df),os.path.join(path,f)))
-                
+
             except ValueError as e:
                 print "error parsing",path," | ",e
             except TypeError as e:
                 print "error parsing",path," | ",e
-                    
-            
+
+
     return res

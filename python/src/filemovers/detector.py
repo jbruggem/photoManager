@@ -49,7 +49,7 @@ class Detector(pyinotify.ProcessEvent):
         print event.mask,event.maskname,event.path,event.pathname
 
 class RootFoldersDetector(Detector):
-    _mask = pyinotify.IN_ISDIR | pyinotify.IN_ACCESS| pyinotify.IN_ATTRIB|  pyinotify.IN_MOVED_TO #@UndefinedVariable
+    _mask = pyinotify.IN_ISDIR | pyinotify.IN_ATTRIB | pyinotify.IN_MOVED_TO #@UndefinedVariable
     _recursive = False
     _auto_add = False
 
