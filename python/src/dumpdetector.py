@@ -14,10 +14,9 @@ if __name__ == '__main__':
         configFile = sys.argv[1]
     else:
         configFile = CONFIG
-    print "using ",configFile
+    print("using ",configFile)
     conf = Config(configFile)
-    
+
     mover = DumpToRenameMover(conf)
     detector = FileCreationDetector(mover, conf.dump_folder)
     detector.start()
-    

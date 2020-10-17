@@ -21,27 +21,27 @@ def symlink(target,linkname,renameIfExists=True):
 
     for i in range(1,99):
         try:
-            print "#symlink"
-            print "#target",os.path.relpath(target,destFolder)
-            print "#linkname",dest
+            print("#symlink")
+            print("#target",os.path.relpath(target,destFolder))
+            print("#linkname",dest)
             cdir = os.curdir
             os.chdir(destFolder)
             os.symlink(os.path.relpath(target,destFolder),dest)
             os.chdir(cdir)
-            print "#done"
+            print("#done")
             return dest
         except OSError as exc:
-            print '#exception'
+            print('#exception')
             if exc.errno == errno.EEXIST:
                 if renameIfExists:
-                    print "#exists. renaming"
+                    print("#exists. renaming")
                     dest = os.path.join(destFolder,fileName[0]+'_'+str(i)+fileName[1])
                 else:
-                    print "#exists. Not symlinking."
+                    print("#exists. Not symlinking.")
                     return dest
             else: raise
 
-    print "Tried symlinking to",target,"with",linkname," without success. Giving up since we might be in a loop."
+    print("Tried symlinking to",target,"with",linkname," without success. Giving up since we might be in a loop.")
     return
 
 def makeDirs(path,renameIfExists=True):
@@ -50,25 +50,25 @@ def makeDirs(path,renameIfExists=True):
     destName = os.path.basename(path)
     for i in range(1,99):
         try:
-            print "making",dest
+            print("making",dest)
             os.makedirs(dest)
             return dest
         except OSError as exc:
-            print "making dir exception",exc
+            print("making dir exception",exc)
             if exc.errno == errno.EEXIST:
-                print "path exists"
+                print("path exists")
                 if renameIfExists:
                     dest = os.path.join(destFolder,destName+'_'+str(i))
                 else:
                     return dest
             else: raise
 
-    print "Tried making dir ",path," without success. Giving up since we might be in a loop."
+    print("Tried making dir ",path," without success. Giving up since we might be in a loop.")
     return
 
 
 def moveFile(srcPath,destPath):
-    print "moving",srcPath,destPath
+    print("moving",srcPath,destPath)
     fileName = os.path.splitext(os.path.basename(destPath))
     destFolder = os.path.dirname(destPath)
     dest  = destPath
@@ -82,20 +82,20 @@ def moveFile(srcPath,destPath):
                 dest = os.path.join(destFolder,fileName[0]+'_'+str(i)+fileName[1])
             else: raise
 
-    print "Tried renaming from",srcPath,"to",destPath," without success. Giving up since we might be in a loop."
+    print("Tried renaming from",srcPath,"to",destPath," without success. Giving up since we might be in a loop.")
     return
 
 
 
 def sameDay(day1,day2):
-    print "compare",day1, day2
+    print("compare",day1, day2)
     return day1.year == day2.year and day1.month == day2.month and day1.day == day2.day
 
 def mkDateFolderName(dt):
     return dt.strftime('%Y-%m-%d')
 
 def mkRangeFolderName(dtStart,dtFinish,parent):
-    print type(dtStart), type(dtFinish), dtStart, dtFinish
+    print(type(dtStart), type(dtFinish), dtStart, dtFinish)
 
     n = dtStart.strftime('%Y-%m-%d')
 
@@ -141,9 +141,9 @@ def parseDateFolderName(name):
         #print "date:",dt
         return dt
     except ValueError as e:
-        print "error parsing",name," | ",e
+        print("error parsing",name," | ",e)
     except TypeError as e:
-        print "error parsing",name," | ",e
+        print("error parsing",name," | ",e)
     return None
 
 
@@ -181,9 +181,9 @@ def findRangeFolders(path):
                 res.append((datetime.datetime(ys,ms,ds),datetime.datetime(yf,mf,df),os.path.join(path,f)))
 
             except ValueError as e:
-                print "error parsing",path," | ",e
+                print("error parsing",path," | ",e)
             except TypeError as e:
-                print "error parsing",path," | ",e
+                print("error parsing",path," | ",e)
 
 
     return res

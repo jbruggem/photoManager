@@ -13,8 +13,8 @@ class Config():
     
     def __init__(self,configfile):
         self._config = yaml.load(open(configfile))
-        print "[config] loading config"
-        print len(self._config)," keys"
+        print("[config] loading config")
+        print(len(self._config)," keys")
         #print self._config
         
     def  __getitem__(self,key):
@@ -32,8 +32,8 @@ class Config():
                 d = d[k]
             return d
         except KeyError as e:
-            print "KeyError:",e
-            print "Key not found:",keypath
+            print("KeyError:",e)
+            print("Key not found:",keypath)
             return ''
         
             
@@ -43,7 +43,7 @@ class Config():
         except KeyError:
             pass
         
-        print "[config] reading ",name
+        print("[config] reading ",name)
         
         if name == 'make_fusioned_folder_names':
             value = self._config['config']['make_fusioned_folder_names']
@@ -76,13 +76,13 @@ class Config():
             value = os.path.join(self.root_folder,self._config['paths']['raw']) 
                          
         else:
-            print "key name unknown."
+            print("key name unknown.")
             value = None
         
         if value != None:
-            print "[config] found value:",value
+            print("[config] found value:",value)
         else:
-            print "[config] key not in config."
+            print("[config] key not in config.")
         
         self._cache[name] = value
         return value

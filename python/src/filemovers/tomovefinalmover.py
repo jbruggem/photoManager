@@ -19,14 +19,16 @@ class ToMoveFinalMover(Mover):
         mimetypes.init()
 
     def handle(self,path):
-        print "ToMoveFinalMover.handle",path
+        print("ToMoveFinalMover.handle",path)
         try:
             self.realHandle(path)
         except Exception:
-            print "failure handling a path"
+            print("failure handling a path")
             traceback.print_exc()
 
         # do some trailing work
+        # TODO: FOR SOME REASON, when both jpg & raw nothing is removed !!
+        # are files not moved, just copied ?
         for fold in os.listdir(self._config.move_folder):
             if 0 == len(os.listdir(os.path.join(self._config.move_folder,fold))):
                 os.rmdir(os.path.join(self._config.move_folder,fold))
@@ -39,7 +41,7 @@ class ToMoveFinalMover(Mover):
         date = mover.parseDateFolderName(foldername)
 
         if None == date:
-            print "ignoring file (no parsable date)"
+            print("ignoring file (no parsable date)")
             return
 
         # are there jpegs ? raws ? films ?
@@ -64,7 +66,7 @@ class ToMoveFinalMover(Mover):
                     newfolder = mover.makeDirs(newfolder)
 
                 symlink = os.path.join(self._config.root_folder,self._config.g(('paths',typefolder)),self._config.g(('paths',linkfolder)),foldername)
-                print "symlink",newfolder, symlink
+                print("symlink",newfolder, symlink)
 
                 mover.symlink( newfolder , symlink )
 
@@ -73,17 +75,17 @@ class ToMoveFinalMover(Mover):
                     if not os.path.exists(dir):
                         dir = mover.makeDirs(dir)
                     renamedFile = os.path.join(dir,os.path.basename(file))
-                    print "rename",file,renamedFile
+                    print("rename",file,renamedFile)
                     mover.moveFile(file,os.path.join(newfolder,renamedFile))
 
         if 0 < len(filesByType['raw']):
-            print "there are raws, reference output jpeg"
+            print("there are raws, reference output jpeg")
             outputJp = self._config.g(('paths','outputJpeg'))
             ojFolder = os.path.join(folderNames['raw'],outputJp)
             if not os.path.exists(ojFolder):
                 newfolder = mover.makeDirs(ojFolder)
             if 0 == len(filesByType['jpeg']):
-                print "no jpeg. symlink outputJpeg"
+                print("no jpeg. symlink outputJpeg")
                 # symlink outputJpeg directly as the jpeg folder if it does not exist
                 mover.symlink(ojFolder, folderNames['jpeg'] )
             else:
@@ -109,7 +111,7 @@ class ToMoveFinalMover(Mover):
         for root, folders, filenames in os.walk(path): #@UnusedVariable
             for f in filenames:
                 currSubfolder = root[len(path)+1:]
-                print currSubfolder
+                print(currSubfolder)
                 currFile = os.path.join(root,f)
                 t = mimetypes.guess_type(currFile)
                 if type(t[0]) == type(""):

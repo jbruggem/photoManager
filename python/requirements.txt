@@ -1,0 +1,3 @@
+pyexiv2=2.3.1
+pyinotify=0.9.6
+pyaml=20.4.0
