@@ -1,9 +1,9 @@
+#! /usr/bin/env python
 '''
 Created on Feb 6, 2011
 
 @author: jehan
 '''
-
 
 from __init__ import CONFIG
 from config import Config
@@ -24,4 +24,3 @@ if __name__ == '__main__':
     mover = ToMoveFinalMover(conf)
     detector = RootFoldersDetector(mover, conf.move_folder)
     detector.start()
-

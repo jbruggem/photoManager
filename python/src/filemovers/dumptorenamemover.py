@@ -19,32 +19,32 @@ class DumpToRenameMover(Mover):
     def __init__(self,config):
         self._config = config
         mimetypes.init()
-    
+
 
     def handleFile(self,handledFilePath):
         print("handleFile", handledFilePath)
-        
+
         # extract the date of the file
         imgDatetime = self.getImageDate(handledFilePath)
-        
+
         # no date? Ignore the file.
         if None != imgDatetime:
             print("Handling",os.path.basename(handledFilePath),imgDatetime)
             dateFolderPath = self.makeFolder(imgDatetime, handledFilePath)
             mover.moveFile(handledFilePath,
                            os.path.join(dateFolderPath,os.path.basename(handledFilePath)))
-        
+
         # do some trailing work
 #        for root,folders,files in os.walk(self._config.dump_folder): #@UnusedVariable
 #            for fold in folders:
 #                if 0 == len(os.listdir(os.path.join(root,fold))):
 #                    os.rmdir(os.path.join(root,fold))
-                
+
 
     def makeFolder(self, imgDatetime, handledFilePath):
         print("making a new folder")
         dateFolders = mover.findDateFolders(self._config.rename_folder)
-         
+
         if mover.mkDateFolderName(imgDatetime) in dateFolders:
             print("folder exists")
             dateFolderPath = dateFolders[mover.mkDateFolderName(imgDatetime)][1]
@@ -53,23 +53,23 @@ class DumpToRenameMover(Mover):
             # make dir if it does not exist
             dateFolderPath = os.path.join(self._config.rename_folder,
                                    mover.mkDateFolderName(imgDatetime))
-                                   
+
             if self._config.use_original_folder_names:
                 print("import original folder name")
                 originalFolderName =  os.path.basename(os.path.dirname(handledFilePath))
                 dateFolderPath += ' '+ originalFolderName
             print("make dir",dateFolderPath)
-            
+
             os.mkdir( dateFolderPath )
-            
+
             if self._config.make_fusioned_folder_names:
                 print("try to merge folders")
                 self.makeRangeFolders(imgDatetime, dateFolders)
             else:
                 print("I won't try merging folders")
-        
+
         return dateFolderPath
-    
+
 
     def moveFile(self,dateFolderPath,handledFilePath):
         print("moving...")
@@ -85,12 +85,12 @@ class DumpToRenameMover(Mover):
                 return
         os.rename(handledFilePath, dest)
         print("moved")
-    
+
     def getImageDate(self,handledFilePath,useFilesystem=True):
         print("Reading metadata:",handledFilePath)
         imgDatetime = None
         try:
-            image = pyexiv2.ImageMetadata(str(handledFilePath,'utf-8'))
+            image = pyexiv2.ImageMetadata(handledFilePath)
             image.read()
             #print image.exifKeys()
             try:
@@ -107,7 +107,7 @@ class DumpToRenameMover(Mover):
                     imgDatetime = datetime.datetime(int(dateParse[0]),int(dateParse[1]),int(dateParse[2]));
                 else:
                     print("pyexif returned nothing worthwhile")
-                    raise Exception()    
+                    raise Exception()
         except Exception as e:
             if type(e) == IOError or type(e) == KeyError:
                 print("Probably no EXIF data :",e)
@@ -117,12 +117,12 @@ class DumpToRenameMover(Mover):
                     print("Mime : ",t)
                     if type(t[0]) == type("") and (
                             t[0].startswith('video') or  t[0].startswith('image')
-                            ):  
+                            ):
                         print("It's an image or a video. Trying the last modif date")
                         imgDatetime = datetime.datetime.fromtimestamp(os.path.getmtime(handledFilePath))
                         print("got:", imgDatetime)
             else: raise
-        print("date time is",imgDatetime)    
+        print("date time is",imgDatetime)
         return imgDatetime
 
     def makeRangeFolders(self,imgDatetime,dateFolders):
@@ -130,14 +130,14 @@ class DumpToRenameMover(Mover):
         # search for possible matches
         prevDay = imgDatetime-datetime.timedelta(days=1)
         #prev = os.path.join(self._config.rename_folder,mkDateFolderName(prevDay))
-        
+
         nextDay = imgDatetime+datetime.timedelta(days=1)
         #next = os.path.join(self._config.rename_folder,mkDateFolderName(nextDay))
-        
+
         rangeFolders = mover.findRangeFolders(self._config.rename_folder)
-        
+
         prevRange = None
-        
+
         if mover.mkDateFolderName(prevDay) in dateFolders:
             print("prev exists")
             if len(rangeFolders):
@@ -145,8 +145,8 @@ class DumpToRenameMover(Mover):
                     if mover.sameDay(finish,prevDay):
                         print("prevRange with prev")
                         prevRange = rangeFoldCurrentPath
-                        break 
-            
+                        break
+
             if None != prevRange:
                 newPrevRange = mover.mkRangeFolderName(start, imgDatetime,self._config.rename_folder)
                 print("we have a prevRange. Rename from",prevRange,"to",newPrevRange)
@@ -158,17 +158,17 @@ class DumpToRenameMover(Mover):
                 print("No prevRange. We make it from ",prevDay,"and",imgDatetime,":",prevRange)
                 os.mkdir(prevRange)
                 prevRangeStart = prevDay
-                
-        nextRange = None                
+
+        nextRange = None
         if mover.mkDateFolderName(nextDay) in dateFolders:
             print("next exists")
             if len(rangeFolders):
                 for start,finish,rangeFoldCurrentPath in rangeFolders: #@UnusedVariable
-                    if mover.sameDay(start,nextDay):   
+                    if mover.sameDay(start,nextDay):
                         print("nextRange with next")
                         nextRange = rangeFoldCurrentPath
                         break
-            
+
             if None != nextRange:
                 print("We have a nextRange",nextRange)
                 if None == prevRange:
@@ -178,9 +178,9 @@ class DumpToRenameMover(Mover):
                 else:
                     mergeRange = mover.mkRangeFolderName(prevRangeStart,finish,self._config.rename_folder)
                     print("with prev: We rename from ",prevRange,"to",mergeRange)
-                    os.rename(prevRange,mergeRange) 
+                    os.rename(prevRange,mergeRange)
                     print("we delete",nextRange)
-                    os.rmdir(nextRange)  
+                    os.rmdir(nextRange)
             else:
                 if None == prevRange:
                     nextRange = mover.mkRangeFolderName(imgDatetime,nextDay,self._config.rename_folder)
@@ -190,9 +190,5 @@ class DumpToRenameMover(Mover):
                     print("No nextRange but we have a prevRange: we merge")
                     mergeRange = mover.mkRangeFolderName(prevRangeStart,nextDay,self._config.rename_folder)
                     print("with prev: We rename from ",prevRange,"to",mergeRange)
-                    os.rename(prevRange,mergeRange) 
+                    os.rename(prevRange,mergeRange)
         # link in prevRange now that we have one
-        
-        
-    
-        

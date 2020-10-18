@@ -1,3 +1,4 @@
-pyexiv2=2.3.1
-pyinotify=0.9.6
-pyaml=20.4.0
+# WARNING: pyexiv2 should be uninstalled first !
+py3exiv2==0.8.0
+pyinotify==0.9.6
+pyaml==20.4.0
