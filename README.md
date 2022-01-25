@@ -1,3 +1,5 @@
+Note: this is an old and unmaintained project.
+
 photoManager
 ============
 
